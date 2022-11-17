@@ -1,14 +1,20 @@
-const Sequelize = require('sequelize');
-const db = new Sequelize('postgres://localhost:5432/wikistack', {
+const Sequelize = require("sequelize");
+const db = new Sequelize("postgres://localhost:5432/wikistack", {
   logging: false,
 });
 
-const Pages = db.define('pages', {
+function makeSlug(title) {
+  let wordsArray = title.split(" ");
+  var regexPattern = /[^A-Za-z0-9]/g;
+  // for each element of wordsArray, apply this regex.
+  return wordsArray.map((word) => word.replace(regexPattern, "")).join("_"); // this step wiped out the non-alphanums
+}
+
+const Pages = db.define("pages", {
   // title, slug, content, status:
   title: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: 'unnamed article',
     validate: {
       // title can be just about anything, BUT length must > 0.
       notEmpty: true,
@@ -18,7 +24,6 @@ const Pages = db.define('pages', {
   slug: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: 'https://en.wikipedia.org',
     validate: {
       isURL: true,
     },
@@ -26,26 +31,37 @@ const Pages = db.define('pages', {
   content: {
     type: Sequelize.TEXT,
     allowNull: false,
-    defaultValue: '[Content should go here, god willing]',
     validate: {
       notEmpty: true,
     },
   },
   status: {
-    type: Sequelize.ENUM('open', 'closed'),
-    defaultValue: 'closed',
+    type: Sequelize.ENUM("open", "closed"),
     validate: {
-      isIn: [['open', 'closed']],
+      isIn: [["open", "closed"]],
     },
   },
 });
 ///
+/// Pages hooks would go here. pages.beforecreate and pages.afterValidate......
+Pages.beforeCreate(async (user, options) => {
+  console.log("USER!!!!!!!!!##############!");
+  console.log(user); // user = req.body
+  const slug = await makeSlug(user.title);
+  console.log("SLUG#################");
+  console.log(slug);
+  Pages.slug = slug; // this is a guess?
+});
+
+// User.afterValidate('myHookAfter', (user, options) => {
+//   user.username = 'Toni';
+// });
+
 ///
-const Users = db.define('users', {
+const Users = db.define("users", {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: 'mystery user',
     validate: {
       // we will reject _ @ $ and any other special characters, for the purposes of this task.
       isAlphanumeric: true,
@@ -55,13 +71,12 @@ const Users = db.define('users', {
   email: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: 'kevinJames@cbs.com',
     validate: {
       isEmail: true,
     },
   },
 });
-
+/// user hooks would go here
 module.exports = {
   db,
   Pages,
