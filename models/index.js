@@ -1,14 +1,14 @@
-const Sequelize = require("sequelize");
-const db = new Sequelize("postgres://localhost:5432/wikistack", {
+const Sequelize = require('sequelize');
+const db = new Sequelize('postgres://localhost:5432/wikistack', {
   logging: false,
 });
 
-const Pages = db.define("pages", {
+const Pages = db.define('pages', {
   // title, slug, content, status:
   title: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: "unnamed article",
+    defaultValue: 'unnamed article',
     validate: {
       // title can be just about anything, BUT length must > 0.
       notEmpty: true,
@@ -18,7 +18,7 @@ const Pages = db.define("pages", {
   slug: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: "https://en.wikipedia.org",
+    defaultValue: 'https://en.wikipedia.org',
     validate: {
       isURL: true,
     },
@@ -26,26 +26,26 @@ const Pages = db.define("pages", {
   content: {
     type: Sequelize.TEXT,
     allowNull: false,
-    defaultValue: "[Content should go here, god willing]",
+    defaultValue: '[Content should go here, god willing]',
     validate: {
       notEmpty: true,
     },
   },
   status: {
-    type: Sequelize.ENUM("open", "closed"),
-    defaultValue: "closed",
+    type: Sequelize.ENUM('open', 'closed'),
+    defaultValue: 'closed',
     validate: {
-      isIn: [["open", "closed"]],
+      isIn: [['open', 'closed']],
     },
   },
 });
 ///
 ///
-const Users = db.define("users", {
+const Users = db.define('users', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: "mystery user",
+    defaultValue: 'mystery user',
     validate: {
       // we will reject _ @ $ and any other special characters, for the purposes of this task.
       isAlphanumeric: true,
@@ -55,9 +55,9 @@ const Users = db.define("users", {
   email: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: "kevinJames@cbs.com",
+    defaultValue: 'kevinJames@cbs.com',
     validate: {
-      iseMail: true,
+      isEmail: true,
     },
   },
 });
