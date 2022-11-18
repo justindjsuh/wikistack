@@ -17,6 +17,7 @@
       const page = await Pages.create({
         title: req.body.title,
         content: req.body.content,
+        status: req.body.status,
         slug: 'some value', // <- we'll add this line here so we're actually sending our table a value for the new row!
       });
       ```
