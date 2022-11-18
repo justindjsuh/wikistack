@@ -5,13 +5,31 @@
 ### Points to cover
 
 1. Understand what `Pages.create()` is doing
+
    1. We’re populating a row for our database
       1. i.e. we’re setting the `title` column a value of `req.body.title`, same thing for content
    2. This helps us because, we know we need a connection between the hook and the column `slug`, but how do we populate the `slug` column?
+
       1. With the same method with `title` and `content`, we can set `slug: 'some value'` (for now)
+
+      ```jsx
+      // in the wiki.js file
+      const page = await Pages.create({
+        title: req.body.title,
+        content: req.body.content,
+        slug: 'some value', // <- we'll add this line here so we're actually sending our table a value for the new row!
+      });
+      ```
+
       2. Now if we submit the form, we can check our database and see that the `slug` column of our new row has indeed been populated
-         1. But, we can’t keep it as a random string, or else the validator will never fail
+         ```jsx
+         id	title	    slug	    content	        status	       createdAt	       updatedAt
+         1	Test Title	some value	Test Content	closed	Today, 11:11:26 -05	Today, 11:11:26 -05
+                   //    ^^^^^^^^^^
+         ```
+         2. But, we can’t keep it as a random string, or else the validator will never fail
       3. Great, so how does this help us?
+
 2. I finally realized what the line `user.password = hashedPassword;` actually meant.
 
    1. What they’re doing, is that they’re changing the value of `req.body.password` to now be equal to the newly created `hashedPassword`

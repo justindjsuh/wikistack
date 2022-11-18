@@ -44,15 +44,14 @@ const Pages = db.define('pages', {
 // Changed beforeCreate to beforeValidate because we want to change the value of
 // req.body.slug BEFORE it gets validated, because slug will be null by the time we
 // hit it when using beforeCreate.
+
+// Uncomment this code block (lines 50-53) for it to work
 // **************************************************
 // Pages.beforeValidate(async (page, options) => {
 //   const slug = await makeSlug(page.title);
 //   page.slug = slug; // this is a guess?
 // });
 // **************************************************
-// User.afterValidate('myHookAfter', (user, options) => {
-//   user.username = 'Toni';
-// });
 
 ///
 const Users = db.define('users', {
