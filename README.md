@@ -26,7 +26,7 @@
          ```jsx
          id	title	    slug	    content	        status	       createdAt	       updatedAt
          1	Test Title	some value	Test Content	closed	Today, 11:11:26 -05	Today, 11:11:26 -05
-                   //    ^^^^^^^^^^
+                         //    ^^^^^^^^^^
          ```
          2. But, we can’t keep it as a random string, or else the validator will never fail
       3. Great, so how does this help us?
