@@ -1,16 +1,16 @@
-const Sequelize = require("sequelize");
-const db = new Sequelize("postgres://localhost:5432/wikistack", {
+const Sequelize = require('sequelize');
+const db = new Sequelize('postgres://localhost:5432/wikistack', {
   logging: false,
 });
 
 function makeSlug(title) {
-  let wordsArray = title.split(" ");
+  let wordsArray = title.split(' ');
   var regexPattern = /[^A-Za-z0-9]/g;
   // for each element of wordsArray, apply this regex.
-  return wordsArray.map((word) => word.replace(regexPattern, "")).join("_"); // this step wiped out the non-alphanums
+  return wordsArray.map((word) => word.replace(regexPattern, '')).join('_'); // this step wiped out the non-alphanums
 }
 
-const Pages = db.define("pages", {
+const Pages = db.define('pages', {
   // title, slug, content, status:
   title: {
     type: Sequelize.STRING,
@@ -24,9 +24,6 @@ const Pages = db.define("pages", {
   slug: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: {
-      isURL: true,
-    },
   },
   content: {
     type: Sequelize.TEXT,
@@ -36,29 +33,29 @@ const Pages = db.define("pages", {
     },
   },
   status: {
-    type: Sequelize.ENUM("open", "closed"),
+    type: Sequelize.ENUM('open', 'closed'),
     validate: {
-      isIn: [["open", "closed"]],
+      isIn: [['open', 'closed']],
     },
   },
 });
 ///
 /// Pages hooks would go here. pages.beforecreate and pages.afterValidate......
-Pages.beforeCreate(async (user, options) => {
-  console.log("USER!!!!!!!!!##############!");
-  console.log(user); // user = req.body
-  const slug = await makeSlug(user.title);
-  console.log("SLUG#################");
-  console.log(slug);
-  Pages.slug = slug; // this is a guess?
-});
-
+// Changed beforeCreate to beforeValidate because we want to change the value of
+// req.body.slug BEFORE it gets validated, because slug will be null by the time we
+// hit it when using beforeCreate.
+// **************************************************
+// Pages.beforeValidate(async (page, options) => {
+//   const slug = await makeSlug(page.title);
+//   page.slug = slug; // this is a guess?
+// });
+// **************************************************
 // User.afterValidate('myHookAfter', (user, options) => {
 //   user.username = 'Toni';
 // });
 
 ///
-const Users = db.define("users", {
+const Users = db.define('users', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
